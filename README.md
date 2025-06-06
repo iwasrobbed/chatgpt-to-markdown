@@ -2,7 +2,7 @@
 
 A Chrome extension to export ChatGPT conversations as clean, properly formatted markdown files.
 
-![ChatGPT to Markdown: Chrome Extension](https://github.com/user-attachments/assets/7249507d-89dc-4cba-9ccb-ccd93173753d)
+![ChatGPT to Markdown: Chrome Extension](https://github.com/user-attachments/assets/ac025535-44a6-4cef-89ad-27d9c32a0f86)
 
 ## Features
 
