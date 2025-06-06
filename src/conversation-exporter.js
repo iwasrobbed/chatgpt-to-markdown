@@ -12,6 +12,7 @@ import {
   generateFilename,
   triggerDownload,
   validateContent,
+  extractConversationId,
 } from './utils/file-utils.js'
 
 /**
@@ -25,7 +26,16 @@ export async function exportConversation(document = window.document) {
   const conversationTurns = extractConversationTurns(document)
   console.log(`Found ${conversationTurns.length} conversation turns`)
 
-  let markdown = ''
+  // Get current URL and extract conversation ID
+  const currentUrl = window.location.href
+  const conversationId = extractConversationId(currentUrl)
+
+  console.log(`Current URL: ${currentUrl}`)
+  if (conversationId) {
+    console.log(`Conversation ID: ${conversationId}`)
+  }
+
+  let conversationContent = ''
   let messageCount = 0
 
   for (const turn of conversationTurns) {
@@ -33,19 +43,33 @@ export async function exportConversation(document = window.document) {
     const assistantContent = extractAssistantMessage(turn)
 
     if (userContent) {
-      markdown += `**You**: ${convertHtmlToMarkdown(userContent)}\n\n`
+      conversationContent += `**You**: ${convertHtmlToMarkdown(userContent)}\n\n`
       messageCount++
     }
 
     if (assistantContent) {
-      markdown += `**ChatGPT**: ${convertHtmlToMarkdown(assistantContent)}\n\n`
+      conversationContent += `**ChatGPT**: ${convertHtmlToMarkdown(assistantContent)}\n\n`
       messageCount++
     }
   }
 
-  validateContent(markdown)
+  // Validate that we actually have conversation content
+  validateContent(conversationContent)
 
-  const filename = generateFilename()
+  // Start markdown with conversation metadata
+  let markdown = ''
+
+  // Add conversation URL as metadata header
+  if (currentUrl) {
+    markdown += `# ChatGPT Conversation\n\n`
+    markdown += `**Source:** [${currentUrl}](${currentUrl})\n\n`
+    markdown += `---\n\n`
+  }
+
+  // Add the actual conversation content
+  markdown += conversationContent
+
+  const filename = generateFilename(new Date(), conversationId)
   await triggerDownload(markdown, filename)
 
   console.log('Conversation exported successfully')
@@ -55,5 +79,7 @@ export async function exportConversation(document = window.document) {
     messageCount,
     characterCount: markdown.length,
     filename,
+    conversationUrl: currentUrl,
+    conversationId,
   }
 }

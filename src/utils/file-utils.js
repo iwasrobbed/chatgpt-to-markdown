@@ -3,13 +3,32 @@
  */
 
 /**
+ * Extracts conversation ID from ChatGPT URL
+ * @param {string} url - The current page URL
+ * @returns {string|null} Conversation ID or null if not found
+ */
+export function extractConversationId(url) {
+  // Match pattern: https://chatgpt.com/c/[conversation-id] or https://chat.openai.com/c/[conversation-id]
+  const match = url.match(/\/c\/([a-f0-9-]+)/i)
+  return match ? match[1] : null
+}
+
+/**
  * Generates a timestamp-based filename for the conversation export
  * @param {Date} date - Date to use for timestamp (defaults to current date)
+ * @param {string} conversationId - Optional conversation ID to include in filename
  * @returns {string} Generated filename
  */
-export function generateFilename(date = new Date()) {
-  const timestamp = date.toISOString().split('T')[0] // YYYY-MM-DD
-  return `ChatGPT-Conversation-${timestamp}.md`
+export function generateFilename(date = new Date(), conversationId = null) {
+  const timestamp = Math.floor(date.getTime() / 1000) // Unix epoch seconds
+
+  if (conversationId) {
+    // Use first 8 characters of conversation ID for brevity
+    const shortId = conversationId.substring(0, 8)
+    return `ChatGPT-${shortId}-${timestamp}.md`
+  }
+
+  return `ChatGPT-${timestamp}.md`
 }
 
 /**

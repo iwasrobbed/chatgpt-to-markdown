@@ -6,7 +6,9 @@ describe('conversation-exporter', () => {
   let document, window
 
   beforeEach(() => {
-    const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>')
+    const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+      url: 'https://chatgpt.com/c/abc12345-6789-def0-1234-567890abcdef',
+    })
     document = dom.window.document
     window = dom.window
 
@@ -56,9 +58,7 @@ describe('conversation-exporter', () => {
       const result = await exportConversation(document)
 
       expect(result.messageCount).toBe(2)
-      expect(result.filename).toMatch(
-        /ChatGPT-Conversation-\d{4}-\d{2}-\d{2}\.md/
-      )
+      expect(result.filename).toMatch(/ChatGPT-[a-f0-9]+-\d+\.md/)
       expect(result.characterCount).toBeGreaterThan(0)
       expect(mockAnchor.click).toHaveBeenCalled()
     })
