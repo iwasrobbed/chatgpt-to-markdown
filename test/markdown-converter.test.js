@@ -41,10 +41,16 @@ describe('markdown-converter', () => {
 
     test('converts tables to markdown format', () => {
       const html =
-        '<table><tr><th>Header</th></tr><tr><td>Cell</td></tr></table>'
+        '<table><thead><tr><th>Platform</th><th>Description</th></tr></thead><tbody><tr><td>Mayo Clinic</td><td>Hospital</td></tr></tbody></table>'
       const result = convertHtmlToMarkdown(html)
-      expect(result).toContain('| Header |')
-      expect(result).toContain('| Cell |')
+      expect(result).toContain('| Platform | Description |')
+      expect(result).toContain('| --- | --- |')
+      expect(result).toContain('| Mayo Clinic | Hospital |')
+      // Verify proper table structure
+      const lines = result.split('\n')
+      expect(lines[0]).toBe('| Platform | Description |')
+      expect(lines[1]).toBe('| --- | --- |')
+      expect(lines[2]).toBe('| Mayo Clinic | Hospital |')
     })
 
     test('removes unwanted content', () => {

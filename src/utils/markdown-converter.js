@@ -53,18 +53,38 @@ export function convertHtmlToMarkdown(html) {
       })
       .replace(/<pre[^>]*>/g, '\n```\n')
       .replace(/<\/pre>/g, '\n```\n')
-      .replace(/<table[^>]*>/g, '\n')
-      .replace(/<\/table>/g, '\n')
-      .replace(/<thead[^>]*>/g, '')
-      .replace(/<\/thead>/g, '')
-      .replace(/<tbody[^>]*>/g, '')
-      .replace(/<\/tbody>/g, '')
-      .replace(/<tr[^>]*>/g, '| ')
-      .replace(/<\/tr>/g, ' |\n')
-      .replace(/<th[^>]*>/g, '')
-      .replace(/<\/th>/g, ' | ')
-      .replace(/<td[^>]*>/g, '')
-      .replace(/<\/td>/g, ' | ')
+      // Convert tables with proper header separators
+      .replace(/<table[^>]*>[\s\S]*?<\/table>/g, tableHtml => {
+        let result = '\n'
+        let isFirstRow = true
+        let columnCount = 0
+
+        // Process table rows
+        tableHtml.replace(/<tr[^>]*>([\s\S]*?)<\/tr>/g, (trHtml, content) => {
+          let row = '|'
+
+          // Process cells (th or td)
+          content.replace(
+            /<(th|td)[^>]*>([\s\S]*?)<\/\1>/g,
+            (cellHtml, tag, cellContent) => {
+              const cleanContent = cellContent.replace(/<[^>]*>/g, '').trim()
+              row += ` ${cleanContent} |`
+              if (isFirstRow) columnCount++
+            }
+          )
+
+          result += row + '\n'
+
+          // Add header separator after first row (if it contains th elements)
+          if (isFirstRow && trHtml.includes('<th')) {
+            result += '|' + ' --- |'.repeat(columnCount) + '\n'
+          }
+
+          isFirstRow = false
+        })
+
+        return result + '\n'
+      })
       .replace(/<[^>]*>/g, '')
       .replace(/Copy code/g, '')
       .replace(

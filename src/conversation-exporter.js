@@ -43,12 +43,12 @@ export async function exportConversation(document = window.document) {
     const assistantContent = extractAssistantMessage(turn)
 
     if (userContent) {
-      conversationContent += `**You**: ${convertHtmlToMarkdown(userContent)}\n\n`
+      conversationContent += `**You**:\n${convertHtmlToMarkdown(userContent)}\n\n`
       messageCount++
     }
 
     if (assistantContent) {
-      conversationContent += `**ChatGPT**: ${convertHtmlToMarkdown(assistantContent)}\n\n`
+      conversationContent += `**ChatGPT**:\n${convertHtmlToMarkdown(assistantContent)}\n\n`
       messageCount++
     }
   }
