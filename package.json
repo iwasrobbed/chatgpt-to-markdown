@@ -1,0 +1,23 @@
+{
+  "name": "chatgpt-to-markdown",
+  "version": "1.0.0",
+  "description": "Chrome extension to export ChatGPT conversations as markdown",
+  "scripts": {
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "test:build": "bun test test/build.test.js",
+    "build": "bun run build:extension",
+    "build:extension": "bun scripts/build.js",
+    "dev": "bun test --watch",
+    "lint": "bun run lint:js",
+    "lint:js": "echo 'Linting JavaScript files...'",
+    "format": "prettier --write ."
+  },
+  "type": "module",
+  "devDependencies": {
+    "@types/chrome": "^0.0.326",
+    "bun-types": "^1.2.15",
+    "jsdom": "^26.1.0",
+    "prettier": "^3.5.3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "ChatGPT to Markdown",
+  "version": "1.0",
+  "description": "Convert ChatGPT conversations to clean markdown format",
+  "permissions": ["activeTab"],
+  "host_permissions": ["https://chat.openai.com/*", "https://chatgpt.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Export ChatGPT to Markdown"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chat.openai.com/*", "https://chatgpt.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
